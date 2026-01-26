@@ -1,0 +1,28 @@
+# Environments
+venv/
+.env
+backend/.env
+frontend/.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+backend/app/__pycache__/
+backend/app/application/__pycache__/
+backend/app/presentation/__pycache__/
+backend/app/domain/__pycache__/
+backend/app/infrastructure_db/__pycache__/
+backend/app/config/__pycache__/
+
+# Node / React
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Local static files (since we are moving to S3)
+backend/static/
+static/
+
+# IDEs and OS
+.vscode/
+.DS_Store
