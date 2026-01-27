@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.domain import models
 import json
 import bcrypt
+import boto3
 
 def hash_password(password: str) -> str:
     # Securely hash the password using bcrypt
@@ -19,31 +20,39 @@ def hash_password(password: str) -> str:
     # Convert back to string before returning
     return hashed.decode('utf-8')
 
-def register_new_user(first_name, last_name, email, password, dob, gender, hobbies_raw, db, photo_url):
-    # 1. The Logic move: Parse hobbies here instead of the route
-    try:
-        hobbies_list = json.loads(hobbies_raw)
-    except json.JSONDecodeError:
-        hobbies_list = [h.strip() for h in hobbies_raw.split(",")]
+def send_welcome_email(recipient_email: str):
+    client = boto3.client('ses', region_name='ap-south-1') # Mumbai
+    client.send_email(
+        Source='your-verified-email@example.com',
+        Destination={'ToAddresses': [recipient_email]},
+        Message={
+            'Subject': {'Data': 'Welcome to Ayush\'s App!'},
+            'Body': {'Text': {'Data': 'You have successfully registered.'}}
+        }
+    )
 
-    # 2. Hash the password
-    hashed_pw = hash_password(password)
+def register_new_user(user_data: UserCreate, db: Session):
+    # 1. Hash the password
+    hashed_pw = hash_password(user_data.password)
 
-    # 3. Create the Database Model
+    # 2. Create the Database Model
     db_user = Client(
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
+        first_name=user_data.first_name,
+        last_name=user_data.last_name,
+        email=user_data.email,
         password_hash=hashed_pw,
-        dob=dob,
-        gender=gender,
-        hobbies=hobbies_list,
-        photo_url=photo_url
+        dob=user_data.dob,
+        gender=user_data.gender,
+        hobbies=user_data.hobbies,
+        photo_url=user_data.photo_url
     )
 
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+
+    # 3. Send Welcome Email
+    send_welcome_email(user_data.email)
     return db_user
 
 def authenticate_user(email, password, db):

@@ -9,4 +9,4 @@ class UserCreate(BaseModel):
     photo_url: Optional[str] = None
     dob: str
     gender: str
-    hobbies: list[str] = []
+    hobbies: list[str]

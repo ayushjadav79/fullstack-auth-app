@@ -18,7 +18,7 @@ def register_user(
     password: str = Form(...),
     dob: str = Form(...),
     gender: str = Form(...),
-    hobbies: str = Form(...),
+    hobbies: list[str] = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
@@ -28,19 +28,21 @@ def register_user(
     if not photo_path:
         raise HTTPException(status_code=500, detail="Failed to upload image to S3")
 
-    # 2. Call the service to handle parsing and registration
-    # We pass the raw hobbies string and let the service clean it up
-    return auth_service.register_new_user(
+    # 2. Package everything into your new UserCreate class
+    # This significantly improves readability as requested
+    new_user_data = UserCreate(
         first_name=first_name,
         last_name=last_name,
         email=email,
         password=password,
         dob=dob,
         gender=gender,
-        hobbies_raw=hobbies,
-        db=db,
+        hobbies=hobbies,
         photo_url=photo_path
     )
+
+    # 3. Call the service with the single object
+    return auth_service.register_new_user(user_data=new_user_data, db=db)
 
 @router.post("/login")
 def login_user(
