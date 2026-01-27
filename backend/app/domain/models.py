@@ -8,8 +8,8 @@ class Client(Base):
     __tablename__ = "clients"
 
     id = Column(Integer, primary_key=True, index=True)
-    first_name = Column(String, unique=True, index=True, nullable=False)
-    last_name = Column(String, unique=True, index=True, nullable=False)
+    first_name = Column(String, index=True, nullable=False)
+    last_name = Column(String, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
     photo_url = Column(String, nullable=False)
