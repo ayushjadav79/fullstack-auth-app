@@ -1,37 +1,23 @@
 import boto3
-import uuid
-from botocore.exceptions import NoCredentialsError
+from dotenv import load_dotenv
+import os
 
-# Use S3 Bucket name
-BUCKET_NAME = 'user-images-ayush'
+# Load environment variables
+load_dotenv()
 
 # Initialize the S3 client
 s3_client = boto3.client(
     's3',
-    aws_access_key_id='YOUR_ACCESS_KEY',
-    aws_secret_access_key='YOUR_SECRET_KEY',
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     region_name='ap-south-1' # Mumbai Region
 )
 
 def save_photo_to_s3(file):
-    # Uploads the profile photo to S3 instead of saving it locally.
+    bucket_name = os.getenv("S3_BUCKET_NAME")
     try:
-        # Generate a unique filename using UUID
-        extension = file.filename.split(".")[-1]
-        unique_filename = f"{uuid.uuid4()}.{extension}"
-
-        # Upload to S3
-        s3_client.upload_fileobj(
-            file.file, 
-            BUCKET_NAME, 
-            unique_filename,
-            ExtraArgs={'ContentType': file.content_type}
-        )
-
-        # Construct the public URL
-        # Once uploaded, the URL will be: https://bucket-name.s3.region.amazonaws.com/filename
-        return f"https://{BUCKET_NAME}.s3.ap-south-1.amazonaws.com/{unique_filename}"
-
-    except NoCredentialsError:
-        print("AWS Credentials not found")
+        s3_client.upload_fileobj(file.file, bucket_name, file.filename)
+        return f"https://{bucket_name}.s3.ap-south-1.amazonaws.com/{file.filename}"
+    except Exception as e:
+        print(f"S3 Upload Error: {e}")
         return None
