@@ -23,7 +23,7 @@ def hash_password(password: str) -> str:
 def send_welcome_email(recipient_email: str):
     client = boto3.client('ses', region_name='ap-south-1') # Mumbai
     client.send_email(
-        Source='your-verified-email@example.com',
+        Source='ayushjadav314@gmail.com',
         Destination={'ToAddresses': [recipient_email]},
         Message={
             'Subject': {'Data': 'Welcome to Ayush\'s App!'},
