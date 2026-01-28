@@ -64,7 +64,7 @@ def authenticate_user(email, password, db):
 
     # 2. Verify password
     try:
-        if verify_password(password, user.password_hash):
+        if verify_password(password, str(user.password_hash)):
             return user
     except Exception as e:
         print(f"Error during password verification: {e}")
