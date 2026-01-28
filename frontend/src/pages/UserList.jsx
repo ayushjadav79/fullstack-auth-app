@@ -7,10 +7,20 @@ const UserList = () => {
     const [editingUser, setEditingUser] = useState(null);
 
     useEffect(() => {
+        const token = localStorage.getItem("token"); // Get the token saved during login
+
         // Fetch the list of users from the backend
-        axios.get('http://127.0.0.1:8000/users')
+        axios.get('http://127.0.0.1:8000/users', {
+            headers: {
+                Authorization: `Bearer ${token}` // Include the token in the request headers
+            }
+        })
             .then(response => setUsers(response.data))
-            .catch(error => console.error("Error fetching users: ", error));
+            .catch(error => {
+                if(error.response?.status === 401) {
+                    alert("Not permissible - Please login again");
+                }
+            });
     }, []);
 
     const handleDelete = async (id) => {

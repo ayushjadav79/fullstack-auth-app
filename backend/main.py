@@ -13,8 +13,7 @@ app = FastAPI()
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [
-    "http://localhost:5173",
-    "http://13.200.253.108"
+    "http://localhost:5173"
 ]
 
 app.add_middleware(

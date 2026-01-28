@@ -1,4 +1,7 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from app.config.security import SECRET_KEY, ALGORITHM, create_access_token
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from app.domain.schemas import UserCreate
 from app.infrastructure_db.file_storage import save_photo_to_s3
@@ -9,6 +12,25 @@ from app.config.hobbies import hobbies as get_hobbies_list
 from app.domain import models
 
 router = APIRouter()
+
+# Tells Swagger/FastAPI where the login route is
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    # Login to verify the token
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Please login using valid credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, str(SECRET_KEY), algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if not isinstance(email, str):
+            raise credentials_exception
+        return email
+    except JWTError:
+        raise credentials_exception
 
 @router.post("/register")
 def register_user(
@@ -55,10 +77,15 @@ def login_user(
     # If the service returns None (wrong email or password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    
+
+    # Generate JWT Token
+    access_token = create_access_token(data={"sub": user.email})
+
     # If successful return the user info
     return {
         "message": "Login successful",
+        "access_token": access_token,
+        "token_type": "bearer",
         "user": {
             "id": user.id,
             "first_name": user.first_name,
@@ -72,12 +99,12 @@ def get_hobbies():
     return get_hobbies_list()
 
 @router.get("/users")
-def get_users(db: Session = Depends(get_db)):
+def get_users(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     # Endpoint for the React frontend to fetch the list of users.
     return auth_service.get_all_users(db)
 
 @router.delete("/users/{user_id}")
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+def delete_user(user_id: int, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     user = db.query(models.Client).filter(models.Client.id == user_id).first()
     if not user:
         return {"error": "User not found"}
@@ -86,7 +113,12 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     return {"message": "User deleted successfully"}
 
 @router.put("/users/{user_id}")
-def update_user(user_id: int, updated_data: dict, db: Session = Depends(get_db)):
+def update_user(
+    user_id: int, 
+    updated_data: dict, 
+    db: Session = Depends(get_db), 
+    current_user: str = Depends(get_current_user)):
+
     # Find the existing user in db
     db_user = db.query(models.Client).filter(models.Client.id == user_id).first()
     

@@ -15,8 +15,14 @@ const Login = () => {
 
         try {
             const res = await axios.post('http://127.0.0.1:8000/login', data);
-            if (res.data.error) { alert(res.data.error); }
-            else { navigate('/users'); }
+            
+            if (res.data.error) { 
+                alert(res.data.error);
+            }
+            else { 
+                localStorage.setItem("token", res.data.access_token); // Store JWT token
+                navigate('/users');
+            }
         }
         catch (err) {
             alert("Login failed");

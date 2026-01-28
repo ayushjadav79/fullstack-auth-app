@@ -1,4 +1,4 @@
-from app.config.security import hash_password
+from app.config.security import hash_password, verify_password
 from app.domain.schemas import UserCreate
 from app.domain.models import Client
 from sqlalchemy.orm import Session
@@ -62,9 +62,8 @@ def authenticate_user(email, password, db):
     if not user:
         return None
 
-    # 2. Compare the plain password with the hashed one in db
-    # We must encode both to bytes for bcrypt to work
-    if bcrypt.checkpw(password.encode('utf-8'), user.password_hash.encode('utf-8')):
+    # 2. Verify password
+    if verify_password(password, user.password_hash):
         return user
 
     return None
