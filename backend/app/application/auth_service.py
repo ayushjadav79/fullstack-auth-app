@@ -7,19 +7,6 @@ import json
 import bcrypt
 import boto3
 
-def hash_password(password: str) -> str:
-    # Securely hash the password using bcrypt
-
-    # Convert the string password to bytes
-    password_bytes = password.encode('utf-8')
-
-    # Generate a salt and hash the password (bcrypt handles the 72-byte limit automatically now)
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password_bytes, salt)
-
-    # Convert back to string before returning
-    return hashed.decode('utf-8')
-
 def send_welcome_email(recipient_email: str):
     client = boto3.client('ses', region_name='ap-south-1') # Mumbai
     client.send_email(
