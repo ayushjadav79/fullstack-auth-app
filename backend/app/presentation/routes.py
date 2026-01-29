@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import APIKeyHeader
 from app.config.security import SECRET_KEY, ALGORITHM, create_access_token
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
@@ -14,7 +14,7 @@ from app.domain import models
 router = APIRouter()
 
 # Tells Swagger/FastAPI where the login route is
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = APIKeyHeader(name="Authorization")
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     # Login to verify the token
