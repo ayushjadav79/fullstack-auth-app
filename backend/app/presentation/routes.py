@@ -7,7 +7,6 @@ from app.domain.schemas import UserCreate
 from app.infrastructure_db.file_storage import save_photo_to_s3, delete_photo_from_s3
 from app.infrastructure_db.database import get_db
 from app.application import auth_service
-import json
 from app.config.hobbies import hobbies as get_hobbies_list
 from app.domain import models
 

@@ -4,7 +4,6 @@ from app.domain.models import Client
 from sqlalchemy.orm import Session
 from app.domain import models
 import json
-import bcrypt
 import boto3
 
 def send_welcome_email(recipient_email: str):

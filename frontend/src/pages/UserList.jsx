@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
@@ -17,7 +17,7 @@ const UserList = () => {
         })
             .then(response => setUsers(response.data))
             .catch(error => {
-                if(error.response?.status === 401) {
+                if (error.response?.status === 401) {
                     alert("Not permissible - Please login again");
                 }
             });
@@ -93,7 +93,7 @@ const UserList = () => {
                 </div>
             </div>
 
-            
+
             {editingUser && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-blue-100">
@@ -101,59 +101,59 @@ const UserList = () => {
                         <div className="bg-blue-600 p-4">
                             <h3 className="text-xl font-bold text-white">Edit User Profile</h3>
                         </div>
-                        
+
                         {/* Modal Body */}
                         <div className="p-6 space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1">First Name</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={editingUser.first_name}
                                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                                        onChange={(e) => setEditingUser({...editingUser, first_name: e.target.value})}
+                                        onChange={(e) => setEditingUser({ ...editingUser, first_name: e.target.value })}
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1">Last Name</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={editingUser.last_name}
                                         className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                                        onChange={(e) => setEditingUser({...editingUser, last_name: e.target.value})}
+                                        onChange={(e) => setEditingUser({ ...editingUser, last_name: e.target.value })}
                                     />
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                                <input 
+                                <input
                                     type="email"
                                     value={editingUser.email}
                                     className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                                    onChange={(e) => setEditingUser({...editingUser, email: e.target.value})}
+                                    onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
                                 />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-1">Hobbies (comma separated)</label>
-                                <input 
+                                <input
                                     type="text"
                                     value={editingUser.hobbies?.join(", ")}
                                     className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none text-blue-700 font-medium"
-                                    onChange={(e) => setEditingUser({...editingUser, hobbies: e.target.value.split(",").map(h => h.trim())})}
+                                    onChange={(e) => setEditingUser({ ...editingUser, hobbies: e.target.value.split(",").map(h => h.trim()) })}
                                 />
                             </div>
 
                             {/* Modal Footer Buttons */}
                             <div className="flex justify-end space-x-3 pt-4 border-t border-gray-100">
-                                <button 
+                                <button
                                     onClick={() => setEditingUser(null)}
                                     className="px-5 py-2 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 transition"
                                 >
                                     Cancel
                                 </button>
-                                <button 
+                                <button
                                     onClick={handleUpdateSave}
                                     className="px-5 py-2 rounded-lg font-bold bg-blue-600 text-white hover:bg-blue-700 shadow-md transition"
                                 >
@@ -164,7 +164,7 @@ const UserList = () => {
                     </div>
                 </div>
             )}
-        </div>      
+        </div>
     );
 };
 
