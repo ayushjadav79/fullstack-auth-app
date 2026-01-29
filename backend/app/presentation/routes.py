@@ -4,7 +4,7 @@ from app.config.security import SECRET_KEY, ALGORITHM, create_access_token
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from app.domain.schemas import UserCreate
-from app.infrastructure_db.file_storage import save_photo_to_s3
+from app.infrastructure_db.file_storage import save_photo_to_s3, delete_photo_from_s3
 from app.infrastructure_db.database import get_db
 from app.application import auth_service
 import json
@@ -105,11 +105,22 @@ def get_users(db: Session = Depends(get_db), current_user: str = Depends(get_cur
 
 @router.delete("/users/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+    # 1. Find the user
     user = db.query(models.Client).filter(models.Client.id == user_id).first()
     if not user:
         return {"error": "User not found"}
+    
+    # 2. Store the photo URL before the user is deleted
+    photo_url_to_delete = user.photo_url
+
+    # 3. Delete from Database
     db.delete(user)
     db.commit()
+
+    # 4. Delete photo from S3 bucket
+    if photo_url_to_delete:
+        delete_photo_from_s3(photo_url_to_delete)
+        
     return {"message": "User deleted successfully"}
 
 @router.put("/users/{user_id}")
