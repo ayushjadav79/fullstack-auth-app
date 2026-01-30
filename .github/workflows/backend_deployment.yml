@@ -18,8 +18,13 @@ jobs:
                 host: ${{ secrets.EC2_HOST }}       # Public EC2 IP stored in Github
                 username: ubuntu                    # EC2 username
                 key: ${{ secrets.EC2_SSH_KEY }}     # .pem file content
-                script: |                           # Commands to run on EC2
+                
+                # Commands to run on EC2
+                # Pull from repo, install dependencies and restart server
+                script: |
                     cd /home/ubuntu/fullstack-auth-app/backend
                     git pull origin main
                     source venv/bin/activate
                     pip install -r requirements.txt
+                    pkill -f uvicorn || true
+                    nohup uvicorn main:app --host 0.0.0.0 --port 8000 &
