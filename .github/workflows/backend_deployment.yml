@@ -1,1 +1,25 @@
+name: Backend Deployment
 
+# When should this run? (Triggers / Events)
+on:
+    push:
+        branches: [main]        # Only when pushing to the main branch
+        paths:
+            - 'backend/**'      # Only if files inside backend folder change
+
+# What should it do? (Actions)
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Log into EC2 and pull code
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.EC2_HOST }}       # Public EC2 IP stored in Github
+                username: ubuntu                    # EC2 username
+                key: ${{ secrets.EC2_SSH_KEY }}     # .pem file content
+                script: |                           # Commands to run on EC2
+                    cd /home/ubuntu/fullstack-auth-app/backend
+                    git pull origin main
+                    source venv/bin/activate
+                    pip install -r requirements.txt

@@ -1,1 +1,27 @@
+name: Frontend Deployment
 
+# When should this run? (Triggers / Events)
+on:
+    push:
+        branches: [main]        # Only when pushing to the main branch
+        paths:
+            - 'frontend/**'     # Only if files inside frontend folder changes
+
+# What should it do? (Actions)
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get the code from Github
+              uses: actions/checkout@v4
+
+            - name: Send files to EC2
+              uses: appleboy/scp-action@master
+              with:
+                host: ${{ secrets.EC2_HOST }}
+                username: ubuntu
+                key: ${{ secrets.EC2_SSH_KEY }}
+                # Source is frontend folder in Github repo
+                source: "frontend/"
+                # Target is absolute path to project folder on EC2
+                target: "/home/ubuntu/fullstack-auth-app/"         
