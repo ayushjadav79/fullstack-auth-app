@@ -22,5 +22,4 @@ jobs:
                     cd /home/ubuntu/fullstack-auth-app/backend
                     git pull origin main
                     source venv/bin/activate
-                    cd ..
                     pip install -r requirements.txt
