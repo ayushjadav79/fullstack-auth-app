@@ -6,6 +6,7 @@ on:
         branches: [main]        # Only when pushing to the main branch
         paths:
             - 'backend/**'      # Only if files inside backend folder change
+    workflow_dispatch:
 
 # What should it do? (Actions)
 jobs:
