@@ -28,5 +28,5 @@ app.include_router(router)
 
 @app.get("/")
 def read_root():
-    print("Change from branch develop")
+    print("Change from branch feature_1")
     return {"message": "Backend is running and connected to S3"}
