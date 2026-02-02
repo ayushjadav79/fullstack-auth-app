@@ -9,7 +9,7 @@ Resources:
       ImageId: ami-019715e0d74f695be  # AMI image of Ubuntu 24.04
       KeyName: login                  # Existing .pem file name
       SecurityGroupIds:
-        - !Ref SecurityGroupId        # From Github secrets
+        - !Ref CurrentSecurityGroupId        # From Github secrets
       Tags:
         - Key: Name
           Value: Project-Server-Develop   # Name of EC2
