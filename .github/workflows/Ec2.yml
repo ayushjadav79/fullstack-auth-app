@@ -1,0 +1,15 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Procure a t3.micro EC2
+
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      ImageId: ami-019715e0d74f695be  # AMI image of Ubuntu 24.04
+      KeyName: login                  # Existing .pem file name
+      SecurityGroupIds:
+        - !Ref SecurityGroupId        # From Github secrets
+      Tags:
+        - Key: Name
+          Value: Project-Server-Develop   # Name of EC2
