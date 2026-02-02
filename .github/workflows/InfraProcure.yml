@@ -1,0 +1,33 @@
+name: Infrastructure Procurement
+
+on:
+	push:
+		branches: [ develop ]
+	workflow_dispatch:			# Lets us click "Run workflow" manually
+
+jobs:
+	DeployEC2:
+		runs-on: ubuntu-latest
+		permissions:
+			id-token: write		# Required for secure login in AWS
+			contents: read
+		steps:
+			- name: Checkout Code
+			  uses: actions/checkout@v4
+
+			- name: Configure AWS Credentials
+			  uses: aws-actions/configure-aws-credentials@v4
+			  with:
+			  	# Using the ARN of the new role
+				role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+				aws-region: ap-south-1 # Mumbai Region
+
+			- name: Deploy CloudFormation Stack
+			  uses: aws-actions/aws-cloudformation-github-deploy@v1
+			  with:
+			  	name: Dev-Stack
+				template: Ec2.yml
+				# We pass the Security Group ID here
+				parameter-overrides: >-
+					AmiId=ami-019715e0d74f695be,
+					CurrentSecurityGroupId=${{ secrets.SecurityGroupId }}
