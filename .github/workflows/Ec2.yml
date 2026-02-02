@@ -1,6 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Procure a t3.micro EC2
 
+# Defining parameters to be referenced
+Parameters:
+  CurrentSecurityGroupId:
+    Type: String
+    Description: Security Group ID passed from Github Secrets
+
 Resources:
   MyEC2Instance:
     Type: AWS::EC2::Instance
