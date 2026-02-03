@@ -20,7 +20,7 @@ jobs:
         with:
           # Using the ARN of the new role
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-         aws-region: ap-south-1 # Mumbai Region
+          aws-region: ap-south-1 # Mumbai Region
 
       - name: Deploy CloudFormation Stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
@@ -29,5 +29,4 @@ jobs:
           template: ./Ec2.yml
           # We pass the Security Group ID here
           parameter-overrides: >-
-            AmiId=ami-019715e0d74f695be,
             CurrentSecurityGroupId=${{ secrets.SecurityGroupId }}
