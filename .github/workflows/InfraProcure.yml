@@ -27,7 +27,7 @@ jobs:
 			  with:
 			  	name: Dev-Stack
 					template: ./Ec2.yml
-				# We pass the Security Group ID here
-				parameter-overrides: >-
-					AmiId=ami-019715e0d74f695be,
-					CurrentSecurityGroupId=${{ secrets.SecurityGroupId }}
+					# We pass the Security Group ID here
+					parameter-overrides: >-
+						AmiId=ami-019715e0d74f695be,
+						CurrentSecurityGroupId=${{ secrets.SecurityGroupId }}
