@@ -27,6 +27,8 @@ jobs:
         with:
           name: Dev-Stack
           template: ./infrastructure/Ec2.yml
+          # To avoid error when there is no update/change in file
+          no-fail-on-empty-changeset: "1"
           # We pass the Security Group ID here
           parameter-overrides: >-
             CurrentSecurityGroupId=${{ secrets.SecurityGroupId }}
@@ -47,6 +49,7 @@ jobs:
         with:
           name: S3-Storage-Stack
           template: ./infrastructure/S3.yml
+          no-fail-on-empty-changeset: "1"
 
   DeploySES:
     runs-on: ubuntu-latest
@@ -64,4 +67,5 @@ jobs:
         with:
           name: SES-Email-Stack # Separate Stack Name
           template: ./infrastructure/Ses.yml
+          no-fail-on-empty-changeset: "1"
           parameter-overrides: "ProjectEmail=${{ secrets.PROJECT_EMAIL }}"
