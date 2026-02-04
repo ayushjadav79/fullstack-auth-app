@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SES Identity for Project Emails
+
+Parameters:
+  ProjectEmail:
+    Type: String
+    Description: The email address used to send notifications
+
+Resources:
+  EmailIdentity:
+    Type: AWS::SES::EmailIdentity
+    Properties:
+      EmailIdentity: !Ref ProjectEmail
