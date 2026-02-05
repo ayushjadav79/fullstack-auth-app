@@ -6,6 +6,9 @@ Parameters:
   CurrentSecurityGroupId:
     Type: String
     Description: Security Group ID passed from Github Secrets
+  PostgresPassword:
+    Type: String
+    NoEcho: true # This hides the password in AWS logs
 
 Resources:
   MyEC2Instance:
