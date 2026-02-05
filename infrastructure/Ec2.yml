@@ -38,4 +38,13 @@ Resources:
           systemctl enable postgresql
 
           # 4. We set a password for the 'postgres' user
-          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Ayush@#123';"
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${PostgresPassword}';"
+
+          # 5. Create database
+          sudo -u postgres psql -c "CREATE DATABASE my_project_db;"
+
+          # 6. Configure remote access
+          echo "listen_addresses = '*'" >> /etc/postgresql/16/main/postgresql.conf
+          echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/16/main/pg_hba.conf
+
+          systemctl restart postgresql
