@@ -28,24 +28,28 @@ Resources:
           #!/bin/bash -xe
           # The -e flag makes the script STOP if any command fails
           # The -x flag prints every command to the logs for easier debugging
-          # 1. Update the system
+
+          # 1. Wait for automatic system updates to finish to prevent lock errors
+          while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 5; done
+
+          # 2. Update the system
           apt-get update -y
           apt-get upgrade -y
 
-          # 2. Install postgresql and its utilities
+          # 3. Install postgresql and its utilities
           apt-get install -y postgresql postgresql-contrib
 
-          # 3. Start and enable the service
+          # 4. Start and enable the service
           systemctl start postgresql
           systemctl enable postgresql
 
-          # 4. We set a password for the 'postgres' user
+          # 5. We set a password for the 'postgres' user
           sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${PostgresPassword}';"
 
-          # 5. Create database
+          # 6. Create database
           sudo -u postgres psql -c "CREATE DATABASE my_project_db;"
 
-          # 6. Configure remote access
+          # 7. Configure remote access
           echo "listen_addresses = '*'" >> /etc/postgresql/16/main/postgresql.conf
           echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/16/main/pg_hba.conf
 
