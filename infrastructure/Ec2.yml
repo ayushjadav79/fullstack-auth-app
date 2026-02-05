@@ -19,3 +19,20 @@ Resources:
       Tags:
         - Key: Name
           Value: Project-Server-Develop   # Name of EC2
+      
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          # 1. Update the system
+          apt-get update -y
+          apt-get upgrade -y
+
+          # 2. Install postgresql and its utilities
+          apt-get install -y postgresql postgresql-contrib
+
+          # 3. Start and enable the service
+          systemctl start postgresql
+          systemctl enable postgresql
+
+          # 4. We set a password for the 'postgres' user
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'Ayush@#123';"
