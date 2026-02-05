@@ -23,34 +23,33 @@ Resources:
         - Key: Name
           Value: Project-Server-Develop   # Name of EC2
       
+      # The -e flag makes the script STOP if any command fails
+      # The -x flag prints every command to the logs for easier debugging
+      # 1. Wait for automatic system updates to finish to prevent lock errors
+      # 2. Update the system
+      # 3. Install postgresql and its utilities
+      # 4. Start and enable the service
+      # 5. We set a password for the 'postgres' user
+      # 6. Create database
+      # 7. Configure remote access
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
-          # The -e flag makes the script STOP if any command fails
-          # The -x flag prints every command to the logs for easier debugging
-
-          # 1. Wait for automatic system updates to finish to prevent lock errors
+          
           while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 5; done
 
-          # 2. Update the system
           apt-get update -y
           apt-get upgrade -y
 
-          # 3. Install postgresql and its utilities
           apt-get install -y postgresql postgresql-contrib
 
-          # 4. Start and enable the service
           systemctl start postgresql
           systemctl enable postgresql
-
-          # 5. We set a password for the 'postgres' user
+         
           sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${PostgresPassword}';"
 
-          # 6. Create database
           sudo -u postgres psql -c "CREATE DATABASE my_project_db;"
-
-          # 7. Configure remote access
+ 
           echo "listen_addresses = '*'" >> /etc/postgresql/16/main/postgresql.conf
           echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/16/main/pg_hba.conf
-
           systemctl restart postgresql
