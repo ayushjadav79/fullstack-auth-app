@@ -70,3 +70,21 @@ jobs:
           template: ./infrastructure/Ses.yml
           no-fail-on-empty-changeset: "1"
           parameter-overrides: "ProjectEmail=${{ secrets.PROJECT_EMAIL }}"
+
+  DeployECR:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-south-1
+      - name: Deploy ECR Stack
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ECR-Repo-Stack
+          template: ./infrastructure/Ecr.yml
+          no-fail-on-empty-changeset: "1"

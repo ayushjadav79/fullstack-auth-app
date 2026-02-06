@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create ECR repository for Backend Image
+
+Resources:
+  BackendRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      # Name of repository in AWS
+      RepositoryName: my-project-backend
+      # Automatically scans image for security vulnerability
+      ImageScanningConfiguration:
+        ScanOnPush: true
