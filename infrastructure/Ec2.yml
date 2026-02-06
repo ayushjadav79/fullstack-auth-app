@@ -38,9 +38,9 @@ Resources:
           
           while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 60; done
 
-          apt-get update -y
+          sudo apt update -y
 
-          apt-get install -y postgresql postgresql-contrib
+          sudo apt install -y postgresql postgresql-contrib
 
           systemctl start postgresql
           systemctl enable postgresql
@@ -51,4 +51,4 @@ Resources:
  
           echo "listen_addresses = '*'" >> /etc/postgresql/16/main/postgresql.conf
           echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/16/main/pg_hba.conf
-          systemctl restart postgresql
+          systemctl reload postgresql
