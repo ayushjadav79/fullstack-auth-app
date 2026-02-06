@@ -39,7 +39,6 @@ Resources:
           while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 60; done
 
           apt-get update -y
-          apt-get upgrade -y
 
           apt-get install -y postgresql postgresql-contrib
 
