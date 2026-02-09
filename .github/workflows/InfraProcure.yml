@@ -123,7 +123,7 @@ jobs:
       - name: Executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 43.205.254.27 # EC2 Public IP
+          host: ${{ secrets.EC2_HOST }} # EC2 Public IP
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }} # .pem file content
           
