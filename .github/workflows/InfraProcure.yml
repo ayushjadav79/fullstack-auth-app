@@ -115,3 +115,30 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./backend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  DeployToEC2:
+    needs: BuildAndPushBackend # Only runs if the push was successful
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 43.205.254.27 # EC2 Public IP
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }} # .pem file content
+          
+          # 1. Login to ECR
+          # 2. Pull the latest image
+          # 3. Stop and remove the old container (if it exists)
+          # 4. Run the new container
+          script: |
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 470900128638.dkr.ecr.ap-south-1.amazonaws.com
+
+            docker pull 470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-backend:latest
+
+            docker stop my-backend-api || true
+            docker rm my-backend-api || true
+
+            docker run -d --name my-backend-api --network host \
+            -e DATABASE_URL=postgresql://postgres:${{ secrets.DB_PASSWORD }}@localhost:5432/my_project_db \
+            470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-backend:latest
