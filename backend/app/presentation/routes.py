@@ -9,6 +9,7 @@ from app.infrastructure_db.database import get_db
 from app.application import auth_service
 from app.config.hobbies import hobbies as get_hobbies_list
 from app.domain import models
+from typing import cast, Optional
 
 router = APIRouter()
 
@@ -110,7 +111,7 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: str =
         return {"error": "User not found"}
     
     # 2. Store the photo URL before the user is deleted
-    photo_url_to_delete = user.photo_url
+    photo_url_to_delete = cast(Optional[str], user.photo_url)
 
     # 3. Delete from Database
     db.delete(user)
