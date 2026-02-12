@@ -139,8 +139,7 @@ jobs:
             docker stop my-backend-api || true
             docker rm my-backend-api || true
 
-            docker run -d --name my-backend-api \
-            -p 8000:8000 \
+            docker run -d --name my-backend-api --network host \
             -e DB_PASS='${{ secrets.DB_PASSWORD }}' \
-            -e DATABASE_URL="postgresql://postgres:${{ secrets.DB_PASSWORD }}@0.0.0.0:5432/my_project_db" \
+            -e DATABASE_URL="postgresql://postgres:${{ secrets.DB_PASSWORD }}@localhost:5432/my_project_db" \
             470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-backend:latest
