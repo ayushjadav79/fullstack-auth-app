@@ -1,6 +1,7 @@
 import React, { useState , useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import.meta.env.VITE_API_URL
 
 const Register = () => {
     const [availableHobbies, setAvailableHobbies] = useState([]);
