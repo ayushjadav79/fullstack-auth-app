@@ -144,7 +144,7 @@ jobs:
     steps:
       - name: Wait for SSH to be ready
         run: sleep 30 # Gives the instance 30 seconds to breathe after CFN update
-        
+
       - name: Deploy to 1st Instance (Project-Server-Develop)
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -167,6 +167,10 @@ jobs:
 
             docker run -d --name my-backend-api --network host \
               -e DATABASE_URL="postgresql://postgres:${{ secrets.DB_PASSWORD }}@localhost:5432/my_project_db" \
+              -e S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}" \
+              -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+              -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+              -e AWS_REGION="ap-south-1" \
               470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-backend:latest
 
             docker pull 470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-frontend:latest
@@ -188,8 +192,13 @@ jobs:
             
             docker pull 470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-backend:latest
             docker stop my-backend-api || true && docker rm my-backend-api || true
+            
             docker run -d --name my-backend-api --network host \
               -e DATABASE_URL="postgresql://postgres:${{ secrets.DB_PASSWORD }}@localhost:5432/my_project_db" \
+              -e S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}" \
+              -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+              -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+              -e AWS_REGION="ap-south-1" \
               470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-backend:latest
 
             docker pull 470900128638.dkr.ecr.ap-south-1.amazonaws.com/my-project-frontend:latest
