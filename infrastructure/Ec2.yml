@@ -11,7 +11,7 @@ Parameters:
     NoEcho: true # This hides the password in AWS logs
 
 Resources:
-  MyEC2Instance:
+  MyEC2Instance1:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t3.micro
@@ -32,23 +32,35 @@ Resources:
       # 5. We set a password for the 'postgres' user
       # 6. Create database
       # 7. Configure remote access
-      UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash -xe
+      # UserData:
+      #   Fn::Base64: !Sub |
+      #     #!/bin/bash -xe
           
-          while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 60; done
+      #     while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 60; done
 
-          sudo apt update -y
+      #     sudo apt update -y
 
-          sudo apt install -y postgresql postgresql-contrib
+      #     sudo apt install -y postgresql postgresql-contrib
 
-          systemctl start postgresql
-          systemctl enable postgresql
+      #     systemctl start postgresql
+      #     systemctl enable postgresql
          
-          sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${PostgresPassword}';"
+      #     sudo -u postgres psql -c "ALTER USER postgres PASSWORD '${PostgresPassword}';"
 
-          sudo -u postgres psql -c "CREATE DATABASE my_project_db;"
+      #     sudo -u postgres psql -c "CREATE DATABASE my_project_db;"
  
-          echo "listen_addresses = '*'" >> /etc/postgresql/16/main/postgresql.conf
-          echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/16/main/pg_hba.conf
-          systemctl restart postgresql
+      #     echo "listen_addresses = '*'" >> /etc/postgresql/16/main/postgresql.conf
+      #     echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/16/main/pg_hba.conf
+      #     systemctl restart postgresql
+
+  MyEC2Instance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      ImageId: ami-01d1f7bb210183704  # AMI image of Ubuntu 24.04
+      KeyName: login                  # Existing .pem file name
+      SecurityGroupIds:
+        - !Ref CurrentSecurityGroupId        # From Github secrets
+      Tags:
+        - Key: Name
+          Value: Project-Instance-Develop   # Name of EC2
