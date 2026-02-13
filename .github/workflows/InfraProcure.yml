@@ -139,9 +139,12 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   DeployToEC2:
-    needs: [BuildAndPushBackend, BuildAndPushFrontend] # Only runs if the push was successful
+    needs: [BuildAndPushBackend, BuildAndPushFrontend, DeployEC2] # Only runs if the push was successful
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for SSH to be ready
+        run: sleep 30 # Gives the instance 30 seconds to breathe after CFN update
+        
       - name: Deploy to 1st Instance (Project-Server-Develop)
         uses: appleboy/ssh-action@v1.0.3
         with:
