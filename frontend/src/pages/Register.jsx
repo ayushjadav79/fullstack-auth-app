@@ -8,7 +8,7 @@ const Register = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/hobbies')
+        axios.get(Maps('/hobbies'))
             .then(response => setAvailableHobbies(response.data))
             .catch(error => console.error("Error fetching hobbies:", error));
     }, []);
@@ -64,7 +64,7 @@ const Register = () => {
         data.append('file', file);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/register', data);
+            const response = await axios.post(Maps('/register'), data);
             alert("Registration successful! User ID: " + response.data.id);
             navigate('/users'); // Redirect to user list after successful registration
         }

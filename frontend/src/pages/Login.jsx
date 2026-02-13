@@ -15,7 +15,7 @@ const Login = () => {
         data.append('password', password);
 
         try {
-            const res = await axios.post('http://127.0.0.1:8000/login', data);
+            const res = await axios.post(Maps('/login'), data);
             
             if (res.data.error) { 
                 alert(res.data.error);

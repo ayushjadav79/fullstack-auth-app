@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import.meta.env.VITE_API_URL
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
@@ -11,7 +10,7 @@ const UserList = () => {
         const token = localStorage.getItem("token"); // Get the token saved during login
 
         // Fetch the list of users from the backend
-        axios.get('http://127.0.0.1:8000/users', {
+        axios.get(Maps('/users'), {
             headers: {
                 Authorization: `Bearer ${token}` // Include the token in the request headers
             }
@@ -27,7 +26,7 @@ const UserList = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this record?")) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/users/${id}`);
+                await axios.delete(`${import.meta.env.VITE_API_URL}/users/${id}`);
                 // Refresh the list by filtering out the deleted user
                 setUsers(users.filter(user => user.id !== id));
             }
@@ -39,7 +38,7 @@ const UserList = () => {
 
     const handleUpdateSave = async () => {
         try {
-            await axios.put(`http://127.0.0.1:8000/users/${editingUser.id}`, editingUser);
+            await axios.put(`${import.meta.env.VITE_API_URL}/users/${editingUser.id}`, editingUser);
             setUsers(users.map(u => u.id === editingUser.id ? editingUser : u));
             setEditingUser(null);
             alert("User updated successfully!");

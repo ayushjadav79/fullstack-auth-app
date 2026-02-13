@@ -13,12 +13,13 @@ app = FastAPI()
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [
-    "http://localhost:5173"
+    "http://My-App-LB-1803344708.ap-south-1.elb.amazonaws.com",
+    "http://localhost:5173",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
