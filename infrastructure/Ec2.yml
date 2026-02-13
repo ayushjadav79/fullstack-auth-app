@@ -11,7 +11,7 @@ Parameters:
     NoEcho: true # This hides the password in AWS logs
 
 Resources:
-  MyEC2Instance1:
+  MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t3.micro
@@ -52,15 +52,3 @@ Resources:
       #     echo "listen_addresses = '*'" >> /etc/postgresql/16/main/postgresql.conf
       #     echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/16/main/pg_hba.conf
       #     systemctl restart postgresql
-
-  MyEC2Instance2:
-    Type: AWS::EC2::Instance
-    Properties:
-      InstanceType: t3.micro
-      ImageId: ami-01d1f7bb210183704  # AMI image of Ubuntu 24.04
-      KeyName: login                  # Existing .pem file name
-      SecurityGroupIds:
-        - !Ref CurrentSecurityGroupId        # From Github secrets
-      Tags:
-        - Key: Name
-          Value: Project-Instance-Develop   # Name of EC2
