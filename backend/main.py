@@ -13,7 +13,7 @@ app = FastAPI()
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [
-    "http://My-App-LB-1803344708.ap-south-1.elb.amazonaws.com",
+    "http://my-app-lb-1803344708.ap-south-1.elb.amazonaws.com",
     "http://localhost:5173",
 ]
 
