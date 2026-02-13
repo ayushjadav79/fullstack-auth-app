@@ -1,14 +1,13 @@
 import React, { useState , useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import.meta.env.VITE_API_URL
 
 const Register = () => {
     const [availableHobbies, setAvailableHobbies] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(Maps('/hobbies'))
+        axios.get(`${import.meta.env.VITE_API_URL}/hobbies`)
             .then(response => setAvailableHobbies(response.data))
             .catch(error => console.error("Error fetching hobbies:", error));
     }, []);
@@ -64,7 +63,7 @@ const Register = () => {
         data.append('file', file);
 
         try {
-            const response = await axios.post(Maps('/register'), data);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/register`, data);
             alert("Registration successful! User ID: " + response.data.id);
             navigate('/users'); // Redirect to user list after successful registration
         }

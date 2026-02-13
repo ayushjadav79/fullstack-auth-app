@@ -10,7 +10,7 @@ const UserList = () => {
         const token = localStorage.getItem("token"); // Get the token saved during login
 
         // Fetch the list of users from the backend
-        axios.get(Maps('/users'), {
+        axios.get(`${import.meta.env.VITE_API_URL}/users`, {
             headers: {
                 Authorization: `Bearer ${token}` // Include the token in the request headers
             }
