@@ -7,7 +7,7 @@ import Login from './pages/Login.jsx';
 
 // This is the critical line for Load Balanced authentication.
 // It tells Axios to send and receive cookies/tokens for every request.
-axios.defaults.withCredentials = true; //
+axios.defaults.withCredentials = true;
 
 function App() {
   return (

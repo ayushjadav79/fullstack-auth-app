@@ -29,7 +29,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         if not isinstance(email, str):
             raise credentials_exception
         return email
-    except JWTError:
+    except JWTError as e:
+        print(f"Token Validation Error: {e}")
         raise credentials_exception
 
 @router.post("/register")
