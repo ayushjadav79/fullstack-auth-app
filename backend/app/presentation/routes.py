@@ -100,7 +100,7 @@ def get_hobbies():
     return get_hobbies_list()
 
 @router.get("/users")
-def get_users(db: Session = Depends(get_db)):
+def get_users(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     # Endpoint for the React frontend to fetch the list of users.
     return auth_service.get_all_users(db)
 
