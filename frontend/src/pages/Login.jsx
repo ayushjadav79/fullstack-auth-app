@@ -9,25 +9,57 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const data = new FormData();
-        data.append('email', email);
-        data.append('password', password);
+        
+        // 1. Create a plain JSON object instead of FormData
+        const loginData = {
+            email: email,
+            password: password
+        };
 
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}/login`, data);
+            // 2. Send the object and explicitly set the Content-Type header
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/login`, loginData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             
             if (res.data.error) { 
                 alert(res.data.error);
             }
             else { 
-                localStorage.setItem("token", res.data.access_token); // Store JWT token
+                localStorage.setItem("token", res.data.access_token);
                 navigate('/users');
             }
         }
         catch (err) {
-            alert("Login failed");
+            // Log the error response so you can see if the Lambda returns a message
+            console.error("Login Error:", err.response?.data || err.message);
+            alert("Login failed: " + (err.response?.data || "Server unreachable"));
         }
     };
+
+    // const handleLogin = async (e) => {
+    //     e.preventDefault();
+    //     const data = new FormData();
+    //     data.append('email', email);
+    //     data.append('password', password);
+
+    //     try {
+    //         const res = await axios.post(`${import.meta.env.VITE_API_URL}/login`, data);
+            
+    //         if (res.data.error) { 
+    //             alert(res.data.error);
+    //         }
+    //         else { 
+    //             localStorage.setItem("token", res.data.access_token); // Store JWT token
+    //             navigate('/users');
+    //         }
+    //     }
+    //     catch (err) {
+    //         alert("Login failed");
+    //     }
+    // };
 
     return (
         <div className="min-h-screen bg-blue-50 flex items-center justify-center">
