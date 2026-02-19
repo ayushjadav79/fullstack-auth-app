@@ -10,6 +10,7 @@ from app.application import auth_service
 from app.config.hobbies import hobbies as get_hobbies_list
 from app.domain import models
 from typing import cast, Optional
+from app.config.logger_config import logger
 
 router = APIRouter()
 
@@ -24,13 +25,16 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        logger.info(f"Token validation attempt for token starting with: {token[:10]}...")
         payload = jwt.decode(token, str(SECRET_KEY), algorithms=[ALGORITHM])
         email = payload.get("sub")
         if not isinstance(email, str):
+            logger.warning("Token decoded but email 'sub' field is missing or invalid.")
             raise credentials_exception
+        logger.info(f"User {email} successfully authenticated via token.")
         return email
     except JWTError as e:
-        print(f"Token Validation Error: {e}")
+        logger.error(f"JWT Validation Failed: {str(e)} | Token provided: {token}")
         raise credentials_exception
 
 @router.post("/register")
@@ -73,14 +77,17 @@ def login_user(
     password: str = Form(...), 
     db: Session = Depends(get_db)
 ):
+    logger.info(f"Login attempt received for email: {email}")
     user = auth_service.authenticate_user(email, password, db)
     
     # If the service returns None (wrong email or password)
     if not user:
+        logger.warning(f"Failed login attempt: Invalid credentials for {email}")
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     # Generate JWT Token
     access_token = create_access_token(data={"sub": user.email})
+    logger.info(f"Login successful for {email}. Token generated.")
 
     # If successful return the user info
     return {
