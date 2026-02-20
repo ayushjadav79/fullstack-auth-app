@@ -24,15 +24,25 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         detail="Please login using valid credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    # Add a log to see if the token is even arriving at your EC2 now
+    logger.info(f"Incoming Header: {token}") 
+
+    if not token:
+        logger.error("No token received in headers")
+        raise credentials_exception
+    
     try:
         logger.info(f"Token validation attempt for token starting with: {token[:10]}...")
-        payload = jwt.decode(token, str(SECRET_KEY), algorithms=[ALGORITHM])
+        actual_token = token.replace("Bearer ", "") if "Bearer " in token else token
+        payload = jwt.decode(actual_token, str(SECRET_KEY), algorithms=[ALGORITHM])
         email = payload.get("sub")
         if not isinstance(email, str):
             logger.warning("Token decoded but email 'sub' field is missing or invalid.")
             raise credentials_exception
         logger.info(f"User {email} successfully authenticated via token.")
         return email
+    
     except JWTError as e:
         logger.error(f"JWT Validation Failed: {str(e)} | Token provided: {token}")
         raise credentials_exception
